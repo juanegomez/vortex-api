@@ -16,6 +16,7 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('jwt.auth')
 Route::middleware(['jwt.auth'])->group(function () {
     // Rutas que requieren autenticación
     Route::get('/questions', [QuestionController::class, 'index']);
+    Route::get('/questions/export', [QuestionController::class, 'export']);
     Route::get('/questions/{id}', [QuestionController::class, 'show']);
     Route::post('/questions', [QuestionController::class, 'store']);
     Route::post('/questions/validate', [QuestionController::class, 'validateAnswer']);

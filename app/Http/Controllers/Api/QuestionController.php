@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\QuestionService;
 use App\Http\Resources\QuestionsResource;
 use App\Http\Resources\QuestionResource;
+use App\Exports\QuestionsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
 
 class QuestionController extends Controller
 {
@@ -108,5 +111,26 @@ class QuestionController extends Controller
             'status' => $result['status'],
             'is_correct' => $result['is_correct'],
         ], $result['status']);
+    }
+
+    /**
+     * Generar Excel con el listado de preguntas en base de datos.
+    */
+    public function export()
+    {
+        // Define la ruta del archivo en el directorio público
+        $filePath = public_path('questions.xlsx');
+
+        // Exporta el archivo a una variable
+        $export = new QuestionsExport;
+        $excelContent = Excel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
+
+        // Guarda el archivo en el directorio público
+        File::put($filePath, $excelContent);
+
+        return response()->json([
+            'message' => '¡Archivo guardado exitosamente!',
+            'file_url' => url('questions.xlsx')
+        ]);
     }
 }
